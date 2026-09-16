@@ -155,8 +155,7 @@ au mélange des exemples rend l'ordre des lots indépendant du nombre de tirages
 consommés lors de l'initialisation des modèles. La validation ne mélange pas les
 exemples. Les graines Python, NumPy et PyTorch sont fixées et les opérations
 déterministes sont activées.
-Le point d'entrée fixe aussi `MKL_CBWR=COMPATIBLE` avant les opérations numériques
-pour stabiliser la branche de calcul MKL sur CPU.
+Les réglages de calcul CPU sont précisés dans la [note technique](docs/REPRODUCIBILITY.md).
 
 Les six checkpoints sont sélectionnés avant toute évaluation finale. Tous sont
 ensuite évalués sur les 10 000 images du test. L'exactitude est la métrique
@@ -234,36 +233,17 @@ Le dépôt inclut les mesures, les tableaux et les figures. Le jeu complet,
 l'environnement virtuel et les checkpoints sont exclus de Git. Les images
 d'erreurs distribuées sont accompagnées de leur [notice](THIRD_PARTY_NOTICES.md).
 
-## Échecs et vérifications
+## Vérifications
 
-Une exception d'entraînement laisse le journal déjà écrit, son statut et la cause
-observée. Les autres entraînements sont tentés, mais aucune évaluation finale
-n'a lieu si l'un d'eux échoue. Une interruption interceptable est enregistrée.
-Après un arrêt brutal non interceptable, un statut resté actif ne doit pas être
-interprété comme une réussite. Le rapport liste aussi les exécutions échouées
-ou non démarrées et indique les comparaisons incomplètes.
+Les 12 tests passent. Ils contrôlent notamment la séparation des données, le
+mélange commun des lots, le calcul des pertes, la sélection des checkpoints et
+la conservation des échecs. Les métriques ont été recalculées depuis les
+prédictions enregistrées ; le rapport a été régénéré à l'identique.
 
-Les tests vérifient les partitions disjointes et stratifiées, le mélange commun,
-les dimensions, la mise à jour des poids, le rechargement d'un checkpoint,
-la pondération des pertes et l'absence d'accès au test avant la fin des entraînements.
-Ils couvrent aussi la conservation des échecs, le refus d'écrasement, la sélection
-par validation et l'agrégation de toutes les graines.
-Les 12 tests ont été exécutés avec succès. Deux essais courts indépendants avec
-le réglage final ont produit des poids et des métriques identiques pour les deux
-modèles ; les durées ne font pas partie de cette comparaison d'identité.
-Le rapport final a été régénéré à l'identique sans modifier les mesures ni les
-checkpoints. Les métriques ont aussi été recalculées depuis les six fichiers de
-prédictions et les empreintes du code vérifiées contre celles enregistrées au lancement.
-
-Une première vérification a échoué sur l'identité bit à bit de deux entraînements
-synthétiques du MLP à graine identique. Un contrôle a mesuré un écart absolu
-maximal de `3,1851 × 10⁻⁷` sur la première matrice de poids ; une tolérance
-absolue de `10⁻⁷` ne suffisait pas. Les contrôles isolés ne reproduisaient pas
-systématiquement l'écart. Le mode MKL `COMPATIBLE` a été introduit avant les
-expériences complètes après des contrôles réussis avec ce réglage. Le mécanisme
-précis de l'écart initial n'est pas établi. Le test conserve une comparaison
-stricte des poids ; sa réussite locale ne garantit pas l'identité numérique
-sur une autre machine ou une trajectoire complète de quinze époques.
+Les [vérifications détaillées](docs/REPRODUCIBILITY.md) conservent les résultats
+des essais de reproductibilité et l'incident numérique rencontré avant les
+entraînements complets. Ces contrôles vérifient le fonctionnement du code ; ils
+ne remplacent pas l'évaluation expérimentale.
 
 ## Limites et suite
 
@@ -298,4 +278,3 @@ demanderait de nouvelles données tenues à l'écart des décisions de développ
 - [Données et description officielles](https://github.com/zalandoresearch/fashion-mnist).
 - PyTorch, [boucle d'optimisation](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html).
 - PyTorch, [reproductibilité](https://docs.pytorch.org/docs/stable/notes/randomness.html).
-- Intel, [reproductibilité numérique conditionnelle de MKL](https://www.intel.com/content/www/us/en/docs/onemkl/developer-reference-c/2026-0/getting-started-with-conditional-numerical.html).
