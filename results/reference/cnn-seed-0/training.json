@@ -1,0 +1,6 @@
+{
+  "best_epoch": 13,
+  "best_validation_loss": 0.2509231761932373,
+  "training_seconds": 542.2722678817809,
+  "parameters": 105866
+}

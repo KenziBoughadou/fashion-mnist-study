@@ -1,0 +1,30 @@
+{
+  "models": [
+    "mlp",
+    "cnn"
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "epochs": 15,
+  "batch_size": 128,
+  "learning_rate": 0.001,
+  "optimizer": "Adam",
+  "weight_decay": 0,
+  "split_seed": 2026,
+  "selection": "minimum validation loss; first epoch in a tie",
+  "device": "cpu",
+  "threads": 2,
+  "num_workers": 0,
+  "deterministic": true,
+  "mkl_cbwr": "COMPATIBLE",
+  "preprocessing": "float32 pixels divided by 255; no augmentation",
+  "error_sample_seed": 2026,
+  "smoke": false,
+  "train_size": 50000,
+  "validation_size": 10000,
+  "model": "cnn",
+  "seed": 0
+}
