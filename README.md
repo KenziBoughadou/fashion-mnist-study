@@ -22,8 +22,7 @@ entraînements, pour permettre de suivre la démarche et de reproduire l'expéri
 | Outils | Python, PyTorch, torchvision, NumPy, scikit-learn et Matplotlib |
 
 [Résultats](#résultats) · [Erreurs](#ce-que-les-erreurs-montrent) ·
-[Méthode](#méthode) · [Code](#lire-le-code-et-les-résultats-bruts) ·
-[Reproduire](#reproduire) · [Limites et suite](#limites-et-suite)
+[Méthode](#méthode) · [Limites et suite](#limites-et-suite)
 
 ## Résultats
 
@@ -167,72 +166,6 @@ sauvegardes pendant les époques. Elle exclut le téléchargement, l'initialisat
 et le test final. Les temps par époque sont également conservés, hors écriture
 des historiques et checkpoints. Ces mesures proviennent d'une machine partagée.
 
-## Reproduire
-
-Environnement de référence : Python 3.12.3 sur Linux x86_64, versions CPU de
-PyTorch et torchvision. Les dépendances directes et transitives sont figées
-dans [requirements.txt](requirements.txt).
-
-```bash
-git clone https://github.com/KenziBoughadou/fashion-mnist-study.git
-cd fashion-mnist-study
-python3.12 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-python -m pytest -q
-python experiments.py --smoke
-python experiments.py
-```
-
-Si la distribution ne fournit pas `ensurepip`, créer l'environnement avec
-`python3.12 -m venv --without-pip .venv`, puis y installer pip selon la
-[méthode officielle](https://pip.pypa.io/en/stable/installation/#get-pip-py).
-Exécuter le script d'installation avec `.venv/bin/python`, pas avec le Python système.
-
-Le premier lancement télécharge les données. Chaque étude crée un nouveau dossier
-horodaté et affiche son chemin. Pour fixer explicitement un emplacement :
-
-```bash
-python experiments.py --output-dir results/ma-reproduction
-python report.py --results-dir results/ma-reproduction
-```
-
-Pour reconstruire le rapport inclus dans le dépôt, sans relancer l'étude :
-
-```bash
-python report.py --results-dir results/reference
-```
-
-Un dossier existant est refusé : une nouvelle exécution ne remplace jamais une
-tentative précédente. `--data-dir` permet de choisir le cache des données.
-Le mode `--smoke` utilise 1 024 exemples d'entraînement, 256 de validation,
-deux époques et la graine 0 pour chaque modèle. Il n'évalue jamais le test officiel.
-Ses sorties locales sont séparées des résultats scientifiques.
-
-Le rapport se régénère sans entraînement, sans checkpoint et sans téléchargement :
-il lit les mesures et les petits échantillons d'erreurs conservés. Ses tableaux
-et figures dérivés peuvent être remplacés ; les résultats bruts restent inchangés.
-
-## Lire le code et les résultats bruts
-
-- [data.py](data.py) : téléchargement, séparation stratifiée et DataLoader.
-- [models.py](models.py) : les deux architectures.
-- [training.py](training.py) : boucles d'entraînement et d'évaluation.
-- [experiments.py](experiments.py) : protocole, enregistrement et évaluation finale.
-- [report.py](report.py) : tableaux et figures depuis les fichiers enregistrés.
-- [tests/test_study.py](tests/test_study.py) : contrôles des points susceptibles de fausser l'étude.
-
-Chaque dossier d'étude contient le protocole, les indices de partition, le statut,
-les versions installées, le matériel et les empreintes SHA-256 du code expérimental.
-Chaque sous-dossier modèle/graine contient sa configuration, son historique par
-époque, son statut, le checkpoint retenu localement et les mesures finales.
-Les prédictions CSV donnent l'indice officiel de test, la classe réelle et la
-classe prédite ; les matrices de confusion gardent les effectifs bruts.
-
-Le dépôt inclut les mesures, les tableaux et les figures. Le jeu complet,
-l'environnement virtuel et les checkpoints sont exclus de Git. Les images
-d'erreurs distribuées sont accompagnées de leur [notice](THIRD_PARTY_NOTICES.md).
-
 ## Vérifications
 
 Les 12 tests passent. Ils contrôlent notamment la séparation des données, le
@@ -271,10 +204,3 @@ Ces pistes n'ont pas été exécutées et aucun gain n'est établi.
 Le test actuel ayant déjà été observé, des essais complémentaires sur ce même
 test devront être présentés comme exploratoires. Une confirmation indépendante
 demanderait de nouvelles données tenues à l'écart des décisions de développement.
-
-## Références
-
-- Xiao, Rasul et Vollgraf (2017), [Fashion-MNIST](https://arxiv.org/abs/1708.07747).
-- [Données et description officielles](https://github.com/zalandoresearch/fashion-mnist).
-- PyTorch, [boucle d'optimisation](https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html).
-- PyTorch, [reproductibilité](https://docs.pytorch.org/docs/stable/notes/randomness.html).
